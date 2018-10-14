@@ -1,0 +1,49 @@
+version: 2.1
+
+jobs:
+  run:
+    description: "Runs the reviewdog"
+    parameters:
+      tag:
+        description: "The tag to use on the golang image"
+        type: string
+        default: "1.11.1-stretch"
+      working_directory:
+        description: "Directory to run the steps."
+        type: string
+        default: "~/project"
+      linters:
+        description: "fetch linter tools go get URL."
+        type: string
+        default: ""
+    docker:
+      - image: "golang:<< parameters.tag >>"
+    working_directory: "<< parameters.working_directory >>"
+    steps:
+      - checkout
+      - run:
+          name: Fetch linters
+          command: |
+            if [[ -n "<< parameters.linters >>" ]]; then
+              go get -u -v << parameters.linters >>
+            fi
+      - run:
+          name: Run reviewdog
+          command: |
+            go get -u github.com/haya14busa/reviewdog/cmd/reviewdog
+            reviewdog -reporter="github-pr-review"
+
+examples:
+  reviewdog:
+    description: "Usage of zchee/reviewdog orb"
+    usage:
+      version: 2.1
+      orbs:
+        reviewdog: zchee/reviewdog@volatile
+      workflows:
+        build:
+          jobs:
+            - reviewdog/run:
+                tag: "1.11.1-stretch"
+                working_directory: "/path/to/gopath"
+                linters: "golang.org/x/lint/golint github.com/kisielk/errcheck"
