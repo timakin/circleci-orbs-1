@@ -1,0 +1,20 @@
+version: 2.1
+
+executors:
+  golang-stretch:
+    parameters:
+      tag:
+        description: "The tag to use on the golang debian stretch image"
+        type: string
+        default: "1.11.1-stretch"
+    docker:
+      - image: "golang:<< parameters.tag >>"
+
+  golang-alpine:
+    parameters:
+      tag:
+        description: "The tag to use on the golang alpine image"
+        type: string
+        default: "1.11.1-alpine3.8"
+    docker:
+      - image: "golang:<< parameters.tag >>"
