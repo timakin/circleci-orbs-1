@@ -1,0 +1,10 @@
+version: 2.1
+commands:
+  github-token:
+    description: "Setup Github Token for fetching codes private repository"
+    steps:
+      - run:
+          name: Setup Github Token for fetching codes private repository
+          command: |
+            echo "machine github.com login ${GITHUB_TOKEN}" > ~/.netrc
+            if [ -f ~/.gitconfig ]; then rm ~/.gitconfig; fi # Workaround...
